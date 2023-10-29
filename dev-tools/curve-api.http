@@ -1,0 +1,34 @@
+# https://github.com/curvefi/curve-api/blob/main/endpoints.md
+# Undocumented APIs as well
+# Code at https://github.com/curvefi/curve-api/tree/main/pages/api
+
+GET https://api.curve.fi/api/getAllGauges
+
+###
+
+GET https://api.curve.fi/api/getETHprice
+
+###
+
+GET https://api.curve.fi/api/getTVL
+
+###
+
+GET https://api.curve.fi/api/getFactoryTVL
+
+###
+
+GET https://api.curve.fi/api/getPools/ethereum/main
+
+###
+
+GET https://api.curve.fi/api/getPools/ethereum/crypto
+
+###
+
+GET https://api.curve.fi/api/getPools/ethereum/factory
+
+###
+
+GET https://api.curve.fi/api/getPools/ethereum/factory-crypto
+

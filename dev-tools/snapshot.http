@@ -1,0 +1,83 @@
+# Find the gauge weight proposals
+
+POST https://hub.snapshot.org/graphql
+content-type: application/json
+X-REQUEST-TYPE: GraphQL
+
+query {
+  proposals (
+    first: 100,
+    skip: 0,
+    where: {
+      space_in: ["cvx.eth"],
+      title_contains: "gauge weight for"
+    },
+    orderBy: "created",
+    orderDirection: desc
+  ) {
+    id
+    title
+    start
+    end
+    author
+  }
+}
+
+###
+
+# Get a proposal and choices
+
+POST https://hub.snapshot.org/graphql
+content-type: application/json
+X-REQUEST-TYPE: GraphQL
+
+query {
+  proposal(id:"0xf2164daaa801b8b0c8fed6622a460050404c17a32bde7d822e62acb55a8fc262") {
+    id
+    title
+    start
+    end
+    snapshot
+    state
+    author
+    created
+    space {
+      id
+      name
+    }
+    choices
+  }
+}
+
+###
+
+# Get the votes
+POST https://hub.snapshot.org/graphql
+content-type: application/json
+X-REQUEST-TYPE: GraphQL
+
+query {
+  votes (
+    first: 1000
+    skip: 0
+    where: {
+      proposal: "0xd2f6785ba7e199e3a0169c9bfd561ae6d7c81baa54de4291eef0c355251eb94c"
+    }
+    orderBy: "created",
+    orderDirection: desc
+  ) {
+    id
+    voter
+    vp
+    vp_by_strategy
+    vp_state
+    created
+    proposal {
+      id
+    }
+    choice
+    space {
+      id
+    }
+  }
+}
