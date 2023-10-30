@@ -70,6 +70,7 @@ def price_round(round):
 
             price = MANUAL_PRICES[f"{token_symbol}:{timestamp}"]
             usd_value = float(amount) * float(price)
+            per_vote = usd_value / votes if votes != 0 else 0
 
         else:
 
@@ -81,14 +82,17 @@ def price_round(round):
                 if "coins" in json and f"ethereum:{token}" in json["coins"]:
                     price = response.json()["coins"][f"ethereum:{token}"]["price"]
                     usd_value = float(amount) * float(price)
+                    per_vote = usd_value / votes if votes != 0 else 0
                 else:
                     print(f"{round}-{gauge}: Missing {token_symbol} {timestamp}")
                     price = 'MISSING'
                     usd_value = 'MISSING'
+                    per_vote = 'MISSING'
             else:
                 print(f"{round}-{gauge}: Error {response.status_code}")
                 price = 'ERROR'
                 usd_value = 'ERROR'
+                per_vote = 'ERROR'
 
         prices.append([
             gauge,
@@ -99,6 +103,7 @@ def price_round(round):
             votes,
             token,
             token_name,
+            per_vote
         ])
 
     # Save to CSV file
@@ -112,6 +117,8 @@ def price_round(round):
             "usd_value",
             "votes",
             "token",
+            "token_name",
+            "per_vote",
         ])
         writer.writerows(prices)
 
