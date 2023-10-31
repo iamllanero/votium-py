@@ -1,5 +1,5 @@
 from alive_progress import alive_bar
-from votium import rounds
+from votium.rounds import get_last_round
 import requests
 import snapshot
 import incentives
@@ -124,8 +124,11 @@ def price_round(round):
 
 def main():
 
-    with alive_bar(rounds.get_last_round()) as bar:
-        for round in range(1, rounds.get_last_round()+1):
+    with alive_bar(get_last_round()+1) as bar:
+        bar()
+        print("Getting all incentive events...")
+        incentives.get_incentive_events()
+        for round in range(1, get_last_round()+1):
             bar()
             bar.text(f"Round {round}")
             price_round(round)
