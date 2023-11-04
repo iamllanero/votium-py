@@ -136,7 +136,7 @@ def get_mapped_proposals() -> list:
     return mapped_proposals
 
 
-def get_incentive(round) -> dict:
+def get_incentives(round) -> dict:
     """Get the incentives for a given round."""
 
     file_path = f"{OUTPUT_DIR}/round_{round}_incentives.csv"
@@ -149,7 +149,7 @@ def get_incentive(round) -> dict:
         return None
 
 
-def get_incentives_v1(mapped_proposals, initiated, bribed):
+def get_incentive_events_v1(mapped_proposals, initiated, bribed):
     with alive_bar(52) as bar:
         bar.title("Building Votium v1")
         for round in range(1, 53):
@@ -208,7 +208,9 @@ def get_incentives_v1(mapped_proposals, initiated, bribed):
                 writer.writerows(incentives)
 
 
-def get_incentives_v2(new_incentives):
+def get_incentive_events_v2(new_incentives):
+    """Get all NewIncentive events for Votium v2."""
+
     with alive_bar(int(get_last_round()) - 52) as bar:
         bar.title("Building Votium v2")
         for round in range(53, get_last_round() + 1):
@@ -305,9 +307,9 @@ def main():
             end_block=w3.eth.block_number
         )
 
-    get_incentives_v1(mapped_proposals, initiated, bribed)
+    get_incentive_events_v1(mapped_proposals, initiated, bribed)
 
-    get_incentives_v2(new_incentives)
+    get_incentive_events_v2(new_incentives)
 
 
 if __name__ == "__main__":
