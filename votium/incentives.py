@@ -1,12 +1,12 @@
 from alive_progress import alive_bar
 from dotenv import load_dotenv
+from snapshot import get_proposal
+from votium.events import get_events
+from votium.rounds import get_last_round
 from web3 import Web3
 import csv
 import json
 import os
-from snapshot import get_proposal
-from votium.rounds import get_last_round, get_last_completed_round
-from votium.events import get_events
 
 load_dotenv()
 WEB3_HTTP_PROVIDER = os.environ.get("WEB3_HTTP_PROVIDER")
