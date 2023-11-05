@@ -1,10 +1,11 @@
 from alive_progress import alive_bar
+from collections import defaultdict
+from incentives import main as incentives_main, get_incentives
+from snapshot import get_proposal
 from votium.rounds import get_last_round
-import requests
-import snapshot
-import incentives
 import csv
 import os
+import requests
 
 OUTPUT_DIR = "output/price"
 if not os.path.exists(OUTPUT_DIR):
@@ -39,16 +40,30 @@ def price_round(round):
     file_path = f"{OUTPUT_DIR}/round_{round}_price.csv"
     if os.path.exists(file_path):
         with open(file_path, "r") as f:
-            f.readline()
             reader = csv.reader(f)
+            next(reader)
             return list(reader)
     
-    rv = snapshot.get_snapshot(round)
-    ri = incentives.get_incentive(round)
+    snapshot = get_proposal(round)
+
+    # Get the total votes
+    total_score = sum([x[2] for x in snapshot])
+    print(f"Total score in snapshot: {total_score}")
+
+    incentives = get_incentives(round)
+
+    # Get the votes and adjust split across gauges
+    # Get the number of incentive deposits for each gauge
+    incentive_deposits = defaultdict(int)
+    for i in incentives:
+        # gauge,amount,token_symbol,timestamp,token_address,token_name,transaction_hash,block_hash,block_number,unadj_score
+        (gauge, amount, token_symbol, timestamp, token_address, token_name, transaction_hash, block_hash, block_number, unadj_score) = i
+        incentive_deposits[gauge] += 1
 
     prices = []
-    for i in ri:
-        (gauge, amount, token_symbol, timestamp, token, token_name, choice_index, block_hash, block_number) = i
+    total_score = 0
+    for i in incentives:
+        (gauge, amount, token_symbol, timestamp, token_address, token_name, transaction_hash, block_hash, block_number, unadj_score) = i
 
         if token_symbol in ['USDC', 'UST', 'LUNA']:
             amount = float(amount) / 1e6
@@ -58,31 +73,29 @@ def price_round(round):
             amount = float(amount) / 1e18
 
         # Get votes for the gauge
-        votes = 0
-        for v in rv:
-            # print(v)
-            (v_gauge, v_choice_index, v_votes, v_pct_votes) = v
-            if v_gauge == gauge:
-                votes += float(v_votes)
+        if unadj_score == 0:
+            score = 0.0
+        else:
+            score = float(unadj_score) / incentive_deposits[gauge]
 
         # Check / get price from manual prices
         if f"{token_symbol}:{timestamp}" in MANUAL_PRICES:
 
             price = MANUAL_PRICES[f"{token_symbol}:{timestamp}"]
             usd_value = float(amount) * float(price)
-            per_vote = usd_value / votes if votes != 0 else 0
+            per_vote = usd_value / score if score != 0 else 0
 
         else:
 
             # Get price from defillama
-            url = f"https://coins.llama.fi/prices/historical/{timestamp}/ethereum:{token}"
+            url = f"https://coins.llama.fi/prices/historical/{timestamp}/ethereum:{token_address}"
             response = requests.get(url)
             if response.status_code == 200:
                 json = response.json()
-                if "coins" in json and f"ethereum:{token}" in json["coins"]:
-                    price = response.json()["coins"][f"ethereum:{token}"]["price"]
+                if "coins" in json and f"ethereum:{token_address}" in json["coins"]:
+                    price = response.json()["coins"][f"ethereum:{token_address}"]["price"]
                     usd_value = float(amount) * float(price)
-                    per_vote = usd_value / votes if votes != 0 else 0
+                    per_vote = usd_value / score if score != 0 else 0
                 else:
                     print(f"{round}-{gauge}: Missing {token_symbol} {timestamp}")
                     price = 'MISSING'
@@ -94,16 +107,20 @@ def price_round(round):
                 usd_value = 'ERROR'
                 per_vote = 'ERROR'
 
+
         prices.append([
             gauge,
             amount,
             token_symbol,
             price,
             usd_value,
-            votes,
-            token,
+            score,
+            token_address,
             token_name,
-            per_vote
+            per_vote,
+            transaction_hash,
+            block_hash,
+            block_number,
         ])
 
     # Save to CSV file
@@ -115,19 +132,25 @@ def price_round(round):
             "token_symbol",
             "token_price",
             "usd_value",
-            "votes",
+            "score",
             "token",
             "token_name",
             "per_vote",
+            "transaction_hash",
+            "block_hash",
+            "block_number",
         ])
         writer.writerows(prices)
 
+    print(f"Round {round} - Total votes: {total_score}")
+
+
 def main():
 
-    with alive_bar(get_last_round()+1) as bar:
-        bar()
-        print("Getting all incentive events...")
-        incentives.get_incentive_events()
+    incentives_main()
+
+    with alive_bar(get_last_round()) as bar:
+        bar.title("Gathering prices  ")
         for round in range(1, get_last_round()+1):
             bar()
             bar.text(f"Round {round}")
