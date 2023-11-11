@@ -34,9 +34,11 @@ def get_proposal_list():
 
     # Check cache
     cache_file = f"{CACHE_DIR}/proposals.json"
-    if os.path.exists(cache_file):
-        with open(cache_file, "r") as f:
-            response = json.load(f)
+    # if os.path.exists(cache_file):
+    #     with open(cache_file, "r") as f:
+    #         response = json.load(f)
+    if False:
+        pass
 
     else:
         # Fetch the gauge weight proposals
