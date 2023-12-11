@@ -23,6 +23,8 @@ def get_events(abi_file_path: str,
     to manually delete the cache file.
     """
 
+    print(f"Getting events for {event_name} from {start_block} to {end_block}")
+
     CACHE_FILE = f"{CACHE_DIR}/{contract_address}-{event_name}.csv"
 
     events = []
