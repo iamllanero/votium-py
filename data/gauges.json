@@ -1904,6 +1904,22 @@
     "0x2DD2b7E07dD433B758B98A3889a63cbF48ef0D99": {
       "shortName": "crvUSD+frxETH+SDT (0x9543…)",
       "active": true
+    },
+    "0x4B43fEaB8f5ccD38Ac0831DD7eC797330114F058": {
+      "shortName": "FRAX+tBTC+frxETH (0x4D19…)",
+      "active": true
+    },
+    "0x13E58C7b1147385D735a06D14F0456E54C2dEBC8": {
+      "shortName": "PRISMA+cvxPrisma (0x3b21…)",
+      "active": true
+    },
+    "0xf1ce237a1E1a88F6e289CD7998A826138AEB30b0": {
+      "shortName": "PRISMA+yPRISMA (0x6983…)",
+      "active": true
+    },
+    "0x5ccDe4BEC0F4006c3826b51EDF0D227D12EA33FA": {
+      "shortName": "DOLA+DBR+INV (0xC7DE…)",
+      "active": true
     }
   }
 }
