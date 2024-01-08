@@ -62,7 +62,11 @@ def get_block_time(block_number) -> int:
     if block_number in BLOCK_TIME_MAP:
         return BLOCK_TIME_MAP[block_number]
     else:
-        timestamp = w3.eth.get_block(block_number)["timestamp"]
+        # print(block_number)
+        # print(type(block_number))
+        block = w3.eth.get_block(int(block_number))
+        # print(block)
+        timestamp = block["timestamp"]
         BLOCK_TIME_MAP[block_number] = timestamp
         return timestamp
 
@@ -237,6 +241,7 @@ def process_incentive_events_v2(new_incentives):
                 transaction_hash = e[12]
                 block_hash = e[14]
                 block_number = e[15]
+                # print(e)
                 timestamp = get_block_time(block_number)
                 incentives.append([
                     gauge,
