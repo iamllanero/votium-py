@@ -29,8 +29,9 @@ GAUGES = 'data/gauges.json'
 OUTPUT_DIR = "output/incentives"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-VOTIUM1_INCENTIVES = f"{OUTPUT_DIR}/votium1_incentives.csv"
-VOTIUM2_INCENTIVES = f"{OUTPUT_DIR}/votium2_incentives.csv"
+# VOTIUM1_INCENTIVES = f"{OUTPUT_DIR}/votium1_incentives.csv"
+# VOTIUM2_INCENTIVES = f"{OUTPUT_DIR}/votium2_incentives.csv"
+VOTIUM2_EVENT_FILE = "cache/events/0x63942E31E98f1833A234077f47880A66136a2D1e-NewIncentive.csv"
 
 TOKEN_MAP = {}
 BLOCK_TIME_MAP = {}
@@ -73,9 +74,12 @@ def get_block_time(block_number) -> int:
 
 def get_gauge_score(proposal, gauge_address):
     gauge_name = GAUGE_MAP[gauge_address]
-    for choice in proposal:
-        if choice[0] == gauge_name:
-            return gauge_name, choice[2]
+    if proposal is not None:
+        for choice in proposal:
+            if choice[0] == gauge_name:
+                return gauge_name, choice[2]
+    else:
+        return gauge_name, 0
 
 
 def load_contract(abi, address) -> object:
@@ -274,6 +278,62 @@ def process_incentive_events_v2(new_incentives):
                 writer.writerows(incentives)
 
 
+def process_incentives_v2():
+    """Create incentive CSV files based on Votium v2 NewIncentive."""
+
+    with open(VOTIUM2_EVENT_FILE) as f:
+        reader = csv.reader(f)
+        next(reader)
+        incentives = list(reader)
+
+    # Get the minimum round in the incentives
+    max_round = max([int(row[0]) for row in incentives])  # Assuming _round is in the first column
+
+    # Get the proposal for each round
+
+    print(f"Max round: {max_round}")
+    with alive_bar(max_round - 53 + 1) as bar:
+        bar.title("Creating csv files")
+        for round in range(53, max_round + 1):
+            bar()
+            last_round = get_last_round()
+            if round < int(last_round) + 1:
+                proposal = get_proposal(round)
+            else:
+                proposal = None
+            # Filter to relevant events for the round
+            events = [e for e in incentives if e[0] == str(round)]
+            round_incentives = []
+            for event in events:
+                gauge, score = get_gauge_score(proposal, event[1])
+                token_symbol, token_name = get_token(event[4])
+                round_incentives.append([
+                    gauge,  # gauge
+                    event[5],  # amount
+                    token_symbol,  # token_symbol
+                    get_block_time(event[15]),  # timestamp
+                    event[4],  # token_address
+                    token_name,  # token_name
+                    event[12],  # transaction_hash
+                    event[14],  # block_hash
+                    event[15],  # block_number
+                    score,  # unadj_score
+                ])
+            with open(f"{OUTPUT_DIR}/round_{round}_incentives.csv", "w") as f:
+                writer = csv.writer(f)
+                writer.writerow(['gauge', 
+                'amount', 
+                'token_symbol', 
+                'timestamp', 
+                'token_address', 
+                'token_name', 
+                'transaction_hash', 
+                'block_hash', 
+                'block_number', 
+                'unadj_score'])
+                writer.writerows(round_incentives)
+
+
 def main():
     """Get the incentives for all rounds."""
 
@@ -316,7 +376,9 @@ def main():
 
     process_incentive_events_v1(mapped_proposals, initiated, bribed)
 
-    process_incentive_events_v2(new_incentives)
+    # process_incentive_events_v2(new_incentives)
+
+    process_incentives_v2()
 
 
 if __name__ == "__main__":

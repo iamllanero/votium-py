@@ -147,7 +147,7 @@ def price_round(round):
 
 def main():
 
-    incentives_main()
+    # incentives_main()
 
     with alive_bar(get_last_round()) as bar:
         bar.title("Gathering prices  ")
