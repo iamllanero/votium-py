@@ -1920,6 +1920,26 @@
     "0x5ccDe4BEC0F4006c3826b51EDF0D227D12EA33FA": {
       "shortName": "DOLA+DBR+INV (0xC7DE…)",
       "active": true
+    },
+    "0xB251c0885c7c1975D773B57e67c138FBcEaa6db4": {
+      "shortName": "alETH+WETH (0x8eFD…)",
+      "active": true
+    },
+    "0xdc6d319FAc1498125e871ccEdF7f1B9998ebA3C5": {
+      "shortName": "FRAX+PYUSD (0xA558…)",
+      "active": true
+    },
+    "0xb9BDcDcD7c3C1A3255402D44639cb6c7281833cF": {
+      "shortName": "FRAX+sDAI (0xcE64…)",
+      "active": true
+    },
+    "0x11C6af1F81bF903198D2cEac98Cf06B81B904464": {
+      "shortName": "crvUSD+USDV (0x6DD3…)",
+      "active": true
+    },
+    "0x2d5727a90eDd42B4d666fF773C7809215284c326": {
+      "shortName": "USDV+3Crv (0x00e6…)",
+      "active": true
     }
   }
 }
