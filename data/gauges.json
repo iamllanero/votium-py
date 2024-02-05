@@ -1940,6 +1940,30 @@
     "0x2d5727a90eDd42B4d666fF773C7809215284c326": {
       "shortName": "USDV+3Crv (0x00e6…)",
       "active": true
+    },
+    "0x9da75997624C697444958aDeD6790bfCa96Af19A": {
+      "shortName": "PYUSD+USDC (0x383E…)",
+      "active": true
+    },
+    "0x107E4c1302403095e5A4Bc5e815982aa732e95BD": {
+      "shortName": "FRAX+FPI (0x2Cf9…)",
+      "active": true
+    },
+    "0x0E83dF148F69965BfE752250835854b0dBeeaf01": {
+      "shortName": "FRAX+FXB_20261231 (0xe035…)",
+      "active": true
+    },
+    "0x35aD1ACf0C4BE5d4Ba11342128D440fDb9e189eb": {
+      "shortName": "FRAX+FXB_20240630 (0x4ef4…)",
+      "active": true
+    },
+    "0xC2FE9D3c761994897594Df63B33b6D843Ab7b1cF": {
+      "shortName": "FRAX+FXB_20241231 (0x6307…)",
+      "active": true
+    },
+    "0x74770838d86Fe45cc86c1EDb22089DEC349d8210": {
+      "shortName": "mkUSD+USDC (0xF980…)",
+      "active": true
     }
   }
 }
