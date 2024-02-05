@@ -32,37 +32,30 @@ def get_proposal_list():
     Gets the list of the gauge weight proposals (incl. test proposals)
     """
 
-    # Check cache
+    # NOTE: No longer using cache because this single check is cheap and fast
     cache_file = f"{CACHE_DIR}/proposals.json"
-    # if os.path.exists(cache_file):
-    #     with open(cache_file, "r") as f:
-    #         response = json.load(f)
-    if False:
-        pass
-
-    else:
-        # Fetch the gauge weight proposals
-        print(f"Fetching gauge weight proposals...")
-        response = _snapshot_graphql('''
-            query {
-                proposals (
-                    first: 100,
-                    skip: 0,
-                    where: {
-                        space_in: ["cvx.eth"],
-                        title_contains: "gauge weight for"
-                    },
-                    orderBy: "created",
-                    orderDirection: asc
-                ) {
-                    id
-                    title
-                    start
-                    end
-                    author
-                }
+    # Fetch the gauge weight proposals
+    print(f"Fetching gauge weight proposals...")
+    response = _snapshot_graphql('''
+        query {
+            proposals (
+                first: 100,
+                skip: 0,
+                where: {
+                    space_in: ["cvx.eth"],
+                    title_contains: "gauge weight for"
+                },
+                orderBy: "created",
+                orderDirection: asc
+            ) {
+                id
+                title
+                start
+                end
+                author
             }
-            ''')
+        }
+        ''')
 
     data = response['data']['proposals']
 
@@ -169,16 +162,29 @@ def get_proposal(round):
 
 def main():
     """Build all snapshots"""
-    with alive_bar(1) as bar:
-        print("Getting proposal list from Snapshot")
-        bar()
-        get_proposal_list()
 
-    with alive_bar(rounds.get_last_round()) as bar:
-        for round in range(1, rounds.get_last_round()+1):
-            bar.text(f"Round {round}")
-            bar()
-            proposal = get_proposal(round)
+    # Check if there is a current round
+    current_round = rounds.get_current_round()
+    if current_round is None:
+        print("No current round")
+    else:
+        round_file = f"{OUTPUT_DIR}/round_{current_round}_proposal.csv"
+        cache_file = f"{CACHE_DIR}/round_{current_round}_proposal.json"
+        print(f"Current round: {current_round}.")
+        try:
+            if os.path.exists(round_file):
+                os.remove(round_file)
+                print(f"Deleted {round_file}.")
+                os.remove(f"{cache_file}")
+        except OSError as e:
+            print(f"Error: {e}")
+
+    print("Getting proposal list from Snapshot")
+    get_proposal_list()
+
+    print("Getting proposal details from Snapshot")
+    for round in range(1, rounds.get_last_round()+1):
+        proposal = get_proposal(round)
 
 
 if __name__ == "__main__":

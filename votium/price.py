@@ -2,7 +2,7 @@ from alive_progress import alive_bar
 from collections import defaultdict
 from incentives import main as incentives_main, get_incentives
 from snapshot import get_proposal
-from votium.rounds import get_last_round
+from votium.rounds import get_last_round, get_current_round
 import csv
 import os
 import requests
@@ -32,6 +32,7 @@ MANUAL_PRICES = {
     "sdFXS:1691400455": "6.475601695530601",
     "sdFXS:1692603575": "6.04753134843985",
     "sdFXS:1693817279": "5.422331650380933",
+    "xETH:1705845467": "15.1",
 }
 
 def price_round(round):
@@ -65,7 +66,7 @@ def price_round(round):
     for i in incentives:
         (gauge, amount, token_symbol, timestamp, token_address, token_name, transaction_hash, block_hash, block_number, unadj_score) = i
 
-        if token_symbol in ['USDC', 'UST', 'LUNA']:
+        if token_symbol in ['USDC', 'UST', 'LUNA', 'PYUSD']:
             amount = float(amount) / 1e6
         elif token_symbol in ['EURS']:
             amount = float(amount) / 1e2
@@ -146,6 +147,19 @@ def price_round(round):
 
 
 def main():
+
+    # Check if there is a current round
+    current_round = get_current_round()
+    if current_round is None:
+        print("No current round")
+    else:
+        round_file = f"{OUTPUT_DIR}/round_{current_round}_price.csv"
+        print(f"Current round: {current_round}.")
+        try:
+            os.remove(round_file)
+            print(f"Deleted {round_file}.")
+        except OSError as e:
+            print(f"Error: {e}")
 
     # incentives_main()
 
