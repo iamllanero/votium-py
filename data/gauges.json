@@ -1964,6 +1964,34 @@
     "0x74770838d86Fe45cc86c1EDb22089DEC349d8210": {
       "shortName": "mkUSD+USDC (0xF980…)",
       "active": true
+    },
+    "0x50e40d992a575544C34FdD17745C3fD842028aA1": {
+      "shortName": "xETH+pxETH (0x3C91…)",
+      "active": true
+    },
+    "0xDa9A503E67A075AF2c3Ea840256b02891535471A": {
+      "shortName": "arbi-crvUSD+WETH+GMAC (0x96AA…)",
+      "active": true
+    },
+    "0x58215F083882A5eb7056Ac34a0fdDA9D3b5665d2": {
+      "shortName": "pxETH+stETH (0x6951…)",
+      "active": true
+    },
+    "0x49865b21d1482377B14e9bE112F029edAcf56fb4": {
+      "shortName": "pxETH+mkUSD (0x71Db…)",
+      "active": true
+    },
+    "0xab78AE97cBedE5B1f6Bb212D839f920147020aE7": {
+      "shortName": "USDT+BSGG (0x5500…)",
+      "active": true
+    },
+    "0x4B092818708A721cB187dFACF41f440ADb79044D": {
+      "shortName": "crvUSD+DOLA (0x8272…)",
+      "active": true
+    },
+    "0xB53c23D2CC6219adf78ea22Bfd38bFfc50eC54cB": {
+      "shortName": "FRAX+USDe (0x5dc1…)",
+      "active": true
     }
   }
 }
