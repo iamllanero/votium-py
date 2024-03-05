@@ -1,7 +1,6 @@
-from alive_progress import alive_bar
 from collections import defaultdict
 from incentives import main as incentives_main, get_incentives
-from snapshot import get_proposal
+from snapshot import get_snapshot
 from votium.rounds import get_last_round, get_current_round
 import csv
 import os
@@ -32,20 +31,22 @@ MANUAL_PRICES = {
     "sdFXS:1691400455": "6.475601695530601",
     "sdFXS:1692603575": "6.04753134843985",
     "sdFXS:1693817279": "5.422331650380933",
-    "xETH:1705845467": "15.1",
+    "xETH:1705845467": "1.32",
+    "xETH:1709526839": "2.77",
 }
 
 def price_round(round):
     """Get a round"""
 
-    file_path = f"{OUTPUT_DIR}/round_{round}_price.csv"
+    file_path = f"{OUTPUT_DIR}/round_{round:03d}_price.csv"
     if os.path.exists(file_path):
         with open(file_path, "r") as f:
             reader = csv.reader(f)
             next(reader)
+            print(f"Using {file_path} as it already exists")
             return list(reader)
-    
-    snapshot = get_proposal(round)
+
+    snapshot = get_snapshot(round)
 
     # Get the total votes
     total_score = sum([x[2] for x in snapshot])
@@ -150,10 +151,8 @@ def main():
 
     # Check if there is a current round
     current_round = get_current_round()
-    if current_round is None:
-        print("No current round")
-    else:
-        round_file = f"{OUTPUT_DIR}/round_{current_round}_price.csv"
+    if current_round is not None:
+        round_file = f"{OUTPUT_DIR}/round_{current_round:03d}_price.csv"
         print(f"Current round: {current_round}.")
         try:
             os.remove(round_file)
@@ -163,12 +162,9 @@ def main():
 
     # incentives_main()
 
-    with alive_bar(get_last_round()) as bar:
-        bar.title("Gathering prices  ")
-        for round in range(1, get_last_round()+1):
-            bar()
-            bar.text(f"Round {round}")
-            price_round(round)
+    for round in range(1, get_last_round()+1):
+        print(f"Pricing round {round}")
+        price_round(round)
 
 
 if __name__ == "__main__":

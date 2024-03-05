@@ -145,7 +145,7 @@ def get_snapshot_list_map() -> list:
 def get_incentives(round) -> list:
     """Get the incentives for a given round."""
 
-    file_path = f"{OUTPUT_DIR}/round_{round}_incentives.csv"
+    file_path = f"{OUTPUT_DIR}/round_{round:03d}_incentives.csv"
     if os.path.exists(file_path):
         with open(file_path, "r") as f:
             reader = csv.reader(f)
@@ -274,9 +274,6 @@ def process_incentive_events_v2():
 
 def main():
     """Get the incentives for all rounds."""
-
-    # TODO Need to delete the current round file
-
 
     print("Mapping all Snapshot proposal IDs to Event proposal IDs")
     snapshot_list_map = get_snapshot_list_map()
