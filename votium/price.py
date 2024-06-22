@@ -1,10 +1,13 @@
-from collections import defaultdict
-from incentives import main as incentives_main, get_incentives
-from snapshot import get_snapshot
-from votium.rounds import get_last_round, get_current_round
 import csv
 import os
+from collections import defaultdict
+
 import requests
+from incentives import get_incentives
+from incentives import main as incentives_main
+from snapshot import get_snapshot
+
+from votium.rounds import get_current_round, get_last_round
 
 OUTPUT_DIR = "output/price"
 if not os.path.exists(OUTPUT_DIR):
@@ -33,7 +36,22 @@ MANUAL_PRICES = {
     "sdFXS:1693817279": "5.422331650380933",
     "xETH:1705845467": "1.32",
     "xETH:1709526839": "2.77",
+    "SPELL:1711647035": "0.00126146",
+    "ALCX:1711698179": "34.33",
+    "TXJP:1712817803": "80.72",
+    "FXS:1713139895": "5.16",
+    "FXS:1713163667": "5.16",
+    "FXS:1713164243": "5.16",
+    "FXS:1713165731": "5.16",
+    "FXS:1713201047": "4.92",
+    "TXJP:1714020371": "81.22",
+    "TXJP:1715315723": "68.77",
+    "TXJP:1716684239": "83.52",
+    "sdFXS:1717853147": "4.54",
+    "TXJP:1717900079": "79.75",
+    "TXJP:1719030383": "71.49",
 }
+
 
 def price_round(round):
     """Get a round"""
@@ -59,17 +77,39 @@ def price_round(round):
     incentive_deposits = defaultdict(int)
     for i in incentives:
         # gauge,amount,token_symbol,timestamp,token_address,token_name,transaction_hash,block_hash,block_number,unadj_score
-        (gauge, amount, token_symbol, timestamp, token_address, token_name, transaction_hash, block_hash, block_number, unadj_score) = i
+        (
+            gauge,
+            amount,
+            token_symbol,
+            timestamp,
+            token_address,
+            token_name,
+            transaction_hash,
+            block_hash,
+            block_number,
+            unadj_score,
+        ) = i
         incentive_deposits[gauge] += 1
 
     prices = []
     total_score = 0
     for i in incentives:
-        (gauge, amount, token_symbol, timestamp, token_address, token_name, transaction_hash, block_hash, block_number, unadj_score) = i
+        (
+            gauge,
+            amount,
+            token_symbol,
+            timestamp,
+            token_address,
+            token_name,
+            transaction_hash,
+            block_hash,
+            block_number,
+            unadj_score,
+        ) = i
 
-        if token_symbol in ['USDC', 'UST', 'LUNA', 'PYUSD']:
+        if token_symbol in ["USDC", "UST", "LUNA", "PYUSD"]:
             amount = float(amount) / 1e6
-        elif token_symbol in ['EURS']:
+        elif token_symbol in ["EURS"]:
             amount = float(amount) / 1e2
         else:
             amount = float(amount) / 1e18
@@ -82,73 +122,75 @@ def price_round(round):
 
         # Check / get price from manual prices
         if f"{token_symbol}:{timestamp}" in MANUAL_PRICES:
-
             price = MANUAL_PRICES[f"{token_symbol}:{timestamp}"]
             usd_value = float(amount) * float(price)
             per_vote = usd_value / score if score != 0 else 0
 
         else:
-
             # Get price from defillama
             url = f"https://coins.llama.fi/prices/historical/{timestamp}/ethereum:{token_address}"
             response = requests.get(url)
             if response.status_code == 200:
                 json = response.json()
                 if "coins" in json and f"ethereum:{token_address}" in json["coins"]:
-                    price = response.json()["coins"][f"ethereum:{token_address}"]["price"]
+                    price = response.json()["coins"][f"ethereum:{token_address}"][
+                        "price"
+                    ]
                     usd_value = float(amount) * float(price)
                     per_vote = usd_value / score if score != 0 else 0
                 else:
                     print(f"{round}-{gauge}: Missing {token_symbol} {timestamp}")
-                    price = 'MISSING'
-                    usd_value = 'MISSING'
-                    per_vote = 'MISSING'
+                    price = "MISSING"
+                    usd_value = "MISSING"
+                    per_vote = "MISSING"
             else:
                 print(f"{round}-{gauge}: Error {response.status_code}")
-                price = 'ERROR'
-                usd_value = 'ERROR'
-                per_vote = 'ERROR'
+                price = "ERROR"
+                usd_value = "ERROR"
+                per_vote = "ERROR"
 
-
-        prices.append([
-            gauge,
-            amount,
-            token_symbol,
-            price,
-            usd_value,
-            score,
-            token_address,
-            token_name,
-            per_vote,
-            transaction_hash,
-            block_hash,
-            block_number,
-        ])
+        prices.append(
+            [
+                gauge,
+                amount,
+                token_symbol,
+                price,
+                usd_value,
+                score,
+                token_address,
+                token_name,
+                per_vote,
+                transaction_hash,
+                block_hash,
+                block_number,
+            ]
+        )
 
     # Save to CSV file
     with open(file_path, "w") as f:
         writer = csv.writer(f)
-        writer.writerow([
-            "gauge",
-            "amount",
-            "token_symbol",
-            "token_price",
-            "usd_value",
-            "score",
-            "token",
-            "token_name",
-            "per_vote",
-            "transaction_hash",
-            "block_hash",
-            "block_number",
-        ])
+        writer.writerow(
+            [
+                "gauge",
+                "amount",
+                "token_symbol",
+                "token_price",
+                "usd_value",
+                "score",
+                "token",
+                "token_name",
+                "per_vote",
+                "transaction_hash",
+                "block_hash",
+                "block_number",
+            ]
+        )
         writer.writerows(prices)
 
     print(f"Round {round} - Total votes: {total_score}")
 
 
 def main():
-
     # Check if there is a current round
     current_round = get_current_round()
     if current_round is not None:
@@ -162,7 +204,7 @@ def main():
 
     # incentives_main()
 
-    for round in range(1, get_last_round()+1):
+    for round in range(1, get_last_round() + 1):
         print(f"Pricing round {round}")
         price_round(round)
 

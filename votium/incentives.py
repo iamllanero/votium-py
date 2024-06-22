@@ -275,6 +275,17 @@ def process_incentive_events_v2():
 def main():
     """Get the incentives for all rounds."""
 
+    # TODO Delete incentive cache files for the current round and beyond
+    current_round = get_last_round()
+    print(f"Current round: {current_round}")
+    cache_files = os.listdir(OUTPUT_DIR)
+    for f in cache_files:
+        if f.startswith("round_") and f.endswith("_incentives.csv"):
+            round = int(f.split("_")[1])
+            if round >= int(current_round):
+                print(f"Deleting {f}")
+                os.remove(f"{OUTPUT_DIR}/{f}")
+
     print("Mapping all Snapshot proposal IDs to Event proposal IDs")
     snapshot_list_map = get_snapshot_list_map()
 

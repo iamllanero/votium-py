@@ -1992,6 +1992,86 @@
     "0xB53c23D2CC6219adf78ea22Bfd38bFfc50eC54cB": {
       "shortName": "FRAX+USDe (0x5dc1…)",
       "active": true
+    },
+    "0xa5Dc66685bD13A0924505807c29F8C65dDa0d207": {
+      "shortName": "crvUSD+CJPY (0xca54…)",
+      "active": true
+    },
+    "0xC798130644b8962a357dfBe8BB30b19b681AA7D4": {
+      "shortName": "WETH+CJPY (0x5928…)",
+      "active": true
+    },
+    "0x059E0db6BF882f5fe680dc5409C7adeB99753736": {
+      "shortName": "arbi-crvUSD+FRAX (0x2FE7…)",
+      "active": true
+    },
+    "0x46FEc59Eb30C2D610917ebf4CE5114f7425b2c4A": {
+      "shortName": "arbi-WETH+frxETH (0x1DeB…)",
+      "active": true
+    },
+    "0x8882eB84d0c4894753C0450f2D514E39883c0C82": {
+      "shortName": "fraxtal-FRAX+wfrxETH+FXS (0xa0D3…) ?",
+      "active": true
+    },
+    "0xAA6dDbA00DE48D41E41543eF0a78AB31aae4dE8d": {
+      "shortName": "fraxtal-FRAX+USDC (0xa8eB…) ?",
+      "active": true
+    },
+    "0x696dbfe3B5861120B2c4b7d5c28B1325E8b232F4": {
+      "shortName": "ZETA+crvUSD (0x1198…)",
+      "active": true
+    },
+    "0xE049AA6fbd64210bDEddC15F5a861084E6eE8b57": {
+      "shortName": "fraxtal-crvUSD+FRAX (0x63Eb…) ?",
+      "active": true
+    },
+    "0x98a6C35546be6F7c545c99EfB48F4673eD2c99fc": {
+      "shortName": "fraxtal-FRAX+PYUSD (0x35c6…) ?",
+      "active": true
+    },
+    "0xD1D981dDD0c9A0469E7d8cEE877f83B5877D7260": {
+      "shortName": "fraxtal-wfrxETH+sfrxETH (0xF2f47…) ?",
+      "active": true
+    },
+    "0x72Bd89F2E3470fA5d188cF04eda17E8145eb4BF1": {
+      "shortName": "fraxtal-FRAX+USDT (0xcAEF…) ?",
+      "active": true
+    },
+    "0xB1A829a05E618F7C4f50Cb86f8F64Fb86e42dE5a": {
+      "shortName": "crvUSD+zunUSD (0x8C24…)",
+      "active": true
+    },
+    "0x44f30D79f62a3D5340030d64806cD73239889F07": {
+      "shortName": "zunETH+frxETH (0x3A65…)",
+      "active": true
+    },
+    "0x070EBC9F46d0a6A523D31eb4aE7901C56AD97ae2": {
+      "shortName": "fraxtal-FXS+cvxFXS (0x3a38…)",
+      "active": true
+    },
+    "0x39D053f054e9e5E5ADA759FBDDCEc904D43e9B7c": {
+      "shortName": "arbi-zunETH+WETH (0xEBEE…) ?",
+      "active": true
+    },
+    "0x64100c172D5DC8007E3ee701ECD99468619B6583": {
+      "shortName": "fraxtal-FRAX+DAI (0x86d7…)",
+      "active": true
+    },
+    "0x5C5480A5C90EAcb8f31028f0f0eA9a716d04028D": {
+      "shortName": "arbi-zunUSD+crvUSD (0x8958…)",
+      "active": true
+    },
+    "0x8f8E854EF0dc76D88D2e217D3c2653672d13b252": {
+      "shortName": "sfrxETH+rsETH (0x3772…)",
+      "active": true
+    },
+    "0x277d1424a84B35ec0a8108482551b00b4fc1539b": {
+      "shortName": "pxETH+frxETH (0xe2Ed…)",
+      "active": true
+    },
+    "0x8DfF75976F22db58D7c3Fd7b68d782238B0DbE30": {
+      "shortName": "vETH+WETH (0x6685…)",
+      "active": true
     }
   }
 }
