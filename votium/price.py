@@ -4,7 +4,8 @@ from collections import defaultdict
 
 import requests
 from incentives import get_incentives
-from incentives import main as incentives_main
+
+# from incentives import main as incentives_main
 from snapshot import get_snapshot
 
 from votium.rounds import get_current_round, get_last_round
@@ -50,6 +51,7 @@ MANUAL_PRICES = {
     "sdFXS:1717853147": "4.54",
     "TXJP:1717900079": "79.75",
     "TXJP:1719030383": "71.49",
+    "TXJP:1720253579": "60.01",
 }
 
 

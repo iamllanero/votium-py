@@ -14,23 +14,25 @@ w3 = Web3(Web3.HTTPProvider(WEB3_HTTP_PROVIDER))
 SNAPSHOT_LIST_FILE = "output/snapshot/snapshot_list.csv"
 SNAPSHOT_LIST_MAPPED_FILE = "output/incentives/snapshot_list_mapped.csv"
 
-VOTIUM1_ADDRESS = '0x19BBC3463Dd8d07f55438014b021Fb457EBD4595'
-VOTIUM1_ABI = 'data/abis/votium1.json'
+VOTIUM1_ADDRESS = "0x19BBC3463Dd8d07f55438014b021Fb457EBD4595"
+VOTIUM1_ABI = "data/abis/votium1.json"
 
 # Votium v2 starts round 53 (Sept 13, 2023)
-VOTIUM2_ADDRESS = '0x63942E31E98f1833A234077f47880A66136a2D1e'
-VOTIUM2_ABI = 'data/abis/votium2.json'
+VOTIUM2_ADDRESS = "0x63942E31E98f1833A234077f47880A66136a2D1e"
+VOTIUM2_ABI = "data/abis/votium2.json"
 
-ERC20_ABI = 'data/abis/erc20.json'
+ERC20_ABI = "data/abis/erc20.json"
 
-GAUGES = 'data/gauges.json'
+GAUGES = "data/gauges.json"
 
 OUTPUT_DIR = "output/incentives"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # VOTIUM1_INCENTIVES = f"{OUTPUT_DIR}/votium1_incentives.csv"
 # VOTIUM2_INCENTIVES = f"{OUTPUT_DIR}/votium2_incentives.csv"
-VOTIUM2_EVENT_FILE = "cache/events/0x63942E31E98f1833A234077f47880A66136a2D1e-NewIncentive.csv"
+VOTIUM2_EVENT_FILE = (
+    "cache/events/0x63942E31E98f1833A234077f47880A66136a2D1e-NewIncentive.csv"
+)
 
 TOKEN_MAP = {}
 BLOCK_TIME_MAP = {}
@@ -49,8 +51,8 @@ def get_token(token_address) -> tuple:
         return TOKEN_MAP[token_address]
     else:
         erc20_contract = load_contract(ERC20_ABI, token_address)
-        token_symbol = erc20_contract.functions.symbol().call()
-        token_name = erc20_contract.functions.name().call()
+        token_symbol = erc20_contract.functions.symbol().call()  # type: ignore
+        token_name = erc20_contract.functions.name().call()  # type: ignore
         TOKEN_MAP[token_address] = [token_symbol, token_name]
 
         return token_symbol, token_name
@@ -98,13 +100,15 @@ def get_snapshot_list_map() -> list:
     #         proposals = list(reader)
     #     return proposals
 
-    snapshot_list = [[
-        "round",
-        "start",
-        "end",
-        "id",
-        "title",
-    ]]
+    snapshot_list = [
+        [
+            "round",
+            "start",
+            "end",
+            "id",
+            "title",
+        ]
+    ]
 
     with open(SNAPSHOT_LIST_FILE) as f:
         reader = csv.reader(f)
@@ -118,25 +122,29 @@ def get_snapshot_list_map() -> list:
             keccak_id = w3.keccak(hexstr=snapshot_id)
         else:
             keccak_id = w3.keccak(text=snapshot_id)
-        snapshot_list_map.append([
-            snapshot[0],
-            snapshot[1],
-            snapshot[2],
-            snapshot[3],
-            snapshot[4],
-            keccak_id.hex(),
-        ])
+        snapshot_list_map.append(
+            [
+                snapshot[0],
+                snapshot[1],
+                snapshot[2],
+                snapshot[3],
+                snapshot[4],
+                keccak_id.hex(),
+            ]
+        )
 
     with open(SNAPSHOT_LIST_MAPPED_FILE, "w") as f:
         writer = csv.writer(f)
-        writer.writerow([
-            "round",
-            "start",
-            "end",
-            "id",
-            "title",
-            "keccak_id",
-        ])
+        writer.writerow(
+            [
+                "round",
+                "start",
+                "end",
+                "id",
+                "title",
+                "keccak_id",
+            ]
+        )
         writer.writerows(snapshot_list_map)
 
     return snapshot_list_map
@@ -158,7 +166,6 @@ def get_incentives(round) -> list:
 
 def process_incentive_events_v1(snapshot_list_map, initiated, bribed):
     for round in range(1, 53):
-
         # Check if output already exists
         file_path = f"{OUTPUT_DIR}/round_{round:03d}_incentives.csv"
         if os.path.exists(file_path):
@@ -167,8 +174,7 @@ def process_incentive_events_v1(snapshot_list_map, initiated, bribed):
 
         print(f"Processing round {round} incentives in {file_path}")
         proposal = get_snapshot(round)
-        proposal_id = [
-            p for p in snapshot_list_map if p[0] == str(round)][0][5]
+        proposal_id = [p for p in snapshot_list_map if p[0] == str(round)][0][5]
         events = [b for b in bribed if b[0] == proposal_id[2:]]
         incentives = []
         for e in events:
@@ -182,34 +188,38 @@ def process_incentive_events_v1(snapshot_list_map, initiated, bribed):
             block_number = e[10]
             timestamp = get_block_time(block_number)
             score = proposal[choice_index][2]
-            incentives.append([
-                gauge,
-                amount,
-                token_symbol,
-                timestamp,
-                token_address,
-                token_name,
-                transaction_hash,
-                block_hash,
-                block_number,
-                score,
-            ])
+            incentives.append(
+                [
+                    gauge,
+                    amount,
+                    token_symbol,
+                    timestamp,
+                    token_address,
+                    token_name,
+                    transaction_hash,
+                    block_hash,
+                    block_number,
+                    score,
+                ]
+            )
 
         # Save as CSV
         with open(file_path, "w") as f:
             writer = csv.writer(f)
-            writer.writerow([
-                "gauge",
-                "amount",
-                "token_symbol",
-                "timestamp",
-                "token_address",
-                "token_name",
-                "transaction_hash",
-                "block_hash",
-                "block_number",
-                "unadj_score",
-            ])
+            writer.writerow(
+                [
+                    "gauge",
+                    "amount",
+                    "token_symbol",
+                    "timestamp",
+                    "token_address",
+                    "token_name",
+                    "transaction_hash",
+                    "block_hash",
+                    "block_number",
+                    "unadj_score",
+                ]
+            )
             writer.writerows(incentives)
 
 
@@ -222,7 +232,9 @@ def process_incentive_events_v2():
         incentives = list(reader)
 
     # Get the max round in the incentives file
-    max_round = max([int(row[0]) for row in incentives])  # Assuming _round is in the first column
+    max_round = max(
+        [int(row[0]) for row in incentives]
+    )  # Assuming _round is in the first column
     print(f"Max round: {max_round}")
 
     # Process the incentives for each round
@@ -245,30 +257,36 @@ def process_incentive_events_v2():
         for event in events:
             gauge, score = get_gauge_score(snapshot, event[1])
             token_symbol, token_name = get_token(event[4])
-            round_incentives.append([
-                gauge,  # gauge
-                event[5],  # amount
-                token_symbol,  # token_symbol
-                get_block_time(event[15]),  # timestamp
-                event[4],  # token_address
-                token_name,  # token_name
-                event[12],  # transaction_hash
-                event[14],  # block_hash
-                event[15],  # block_number
-                score,  # unadj_score
-            ])
+            round_incentives.append(
+                [
+                    gauge,  # gauge
+                    event[5],  # amount
+                    token_symbol,  # token_symbol
+                    get_block_time(event[15]),  # timestamp
+                    event[4],  # token_address
+                    token_name,  # token_name
+                    event[12],  # transaction_hash
+                    event[14],  # block_hash
+                    event[15],  # block_number
+                    score,  # unadj_score
+                ]
+            )
         with open(file_path, "w") as f:
             writer = csv.writer(f)
-            writer.writerow(['gauge',
-            'amount',
-            'token_symbol',
-            'timestamp',
-            'token_address',
-            'token_name',
-            'transaction_hash',
-            'block_hash',
-            'block_number',
-            'unadj_score'])
+            writer.writerow(
+                [
+                    "gauge",
+                    "amount",
+                    "token_symbol",
+                    "timestamp",
+                    "token_address",
+                    "token_name",
+                    "transaction_hash",
+                    "block_hash",
+                    "block_number",
+                    "unadj_score",
+                ]
+            )
             writer.writerows(round_incentives)
 
 
@@ -295,7 +313,7 @@ def main():
         VOTIUM1_ADDRESS,
         "Initiated",
         start_block=13209937,  # Contract deployed at 13209937
-        end_block=18043767-1  # One less starting block for Votium v2
+        end_block=18043767 - 1,  # One less starting block for Votium v2
     )
 
     print("Getting all Bribed events from Votium v1")
@@ -304,7 +322,7 @@ def main():
         VOTIUM1_ADDRESS,
         "Bribed",
         start_block=13209937,  # Contract deployed at 13209937
-        end_block=18043767+20000  # 10K past starting block for Votium v2
+        end_block=18043767 + 20000,  # 10K past starting block for Votium v2
     )
 
     process_incentive_events_v1(snapshot_list_map, initiated, bribed)
@@ -315,7 +333,7 @@ def main():
         VOTIUM2_ADDRESS,
         "NewIncentive",
         start_block=18043767,  # Starting block for Votium v2
-        end_block=w3.eth.block_number
+        end_block=w3.eth.block_number,
     )
 
     process_incentive_events_v2()
