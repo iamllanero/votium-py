@@ -57,7 +57,7 @@ def get_snapshot_list():
     for proposal in data:
         test = False
         title = proposal["title"]
-        if title.startswith("(TEST)"):
+        if title.startswith("(TEST)") or title.startswith("FXN"):
             test = True
         else:
             round += 1
