@@ -2072,6 +2072,14 @@
     "0x8DfF75976F22db58D7c3Fd7b68d782238B0DbE30": {
       "shortName": "vETH+WETH (0x6685…)",
       "active": true
+    },
+    "0x48100238C4a3CF44cFbF6C7693eD5C216881fAcE": {
+      "shortName": "fraxtal ?",
+      "active": true
+    },
+    "0x7bA1e40dAe22847E6c521bA297d40fF1c5fD97dd": {
+      "shortName": "fraxtal ?",
+      "active": true
     }
   }
 }
